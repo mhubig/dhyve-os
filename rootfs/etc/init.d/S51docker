@@ -11,8 +11,9 @@ start() {
     local docker_version=$(cat /proc/cmdline | sed -n 's/^.*docker_version=\([^ ]\+\).*$/\1/p')
     local installed_docker=$(/usr/bin/docker --version 2>/dev/null | sed -n 's/^.*version \([^, ]\+\).*$/\1/p')
     if [ ! -x /usr/bin/docker -o "$installed_docker" != "$docker_version" ]; then
-      wget -qO /usr/bin/docker https://get.docker.io/builds/Linux/x86_64/docker-${docker_version}
-      chmod +x /usr/bin/docker
+      wget -qO- https://get.docker.com/builds/Linux/x86_64/docker-${docker_version}.tgz |gunzip |tar -x -C /
+      rm -rf /usr/bin/docker*
+      ln -s  /docker/* /usr/bin/
     fi
 
     export DOCKER_RAMDISK=true
